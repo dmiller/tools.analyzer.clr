@@ -6,8 +6,8 @@
 ;;   the terms of this license.
 ;;   You must not remove this notice, or any other, from this software.
 
-(ns clojure.tools.analyzer.passes.jvm.box
-  (:require [clojure.tools.analyzer.jvm.utils :as u]
+(ns clojure.tools.analyzer.passes.clr.box
+  (:require [clojure.tools.analyzer.clr.utils :as u]
             [clojure.tools.analyzer.utils :refer [protocol-node? arglist-for-arity]]))
 
 (defmulti box

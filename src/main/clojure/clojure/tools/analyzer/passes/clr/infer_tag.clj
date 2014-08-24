@@ -6,9 +6,9 @@
 ;;   the terms of this license.
 ;;   You must not remove this notice, or any other, from this software.
 
-(ns clojure.tools.analyzer.passes.jvm.infer-tag
+(ns clojure.tools.analyzer.passes.clr.infer-tag
   (:require [clojure.tools.analyzer.utils :refer [arglist-for-arity]]
-            [clojure.tools.analyzer.jvm.utils :as u]
+            [clojure.tools.analyzer.clr.utils :as u]
             [clojure.tools.analyzer.env :as env]
             [clojure.set :refer [rename-keys]]))
 

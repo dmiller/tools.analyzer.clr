@@ -6,8 +6,8 @@
 ;;   the terms of this license.
 ;;   You must not remove this notice, or any other, from this software.
 
-(ns clojure.tools.analyzer.passes.jvm.annotate-tag
-  (:require [clojure.tools.analyzer.jvm.utils :refer [unbox maybe-class]])
+(ns clojure.tools.analyzer.passes.clr.annotate-tag
+  (:require [clojure.tools.analyzer.clr.utils :refer [unbox maybe-class]])
   (:import (clojure.lang ISeq Var AFunction)))
 
 (defmulti -annotate-tag :op)

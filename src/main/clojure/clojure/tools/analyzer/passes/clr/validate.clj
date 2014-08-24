@@ -6,12 +6,12 @@
 ;;   the terms of this license.
 ;;   You must not remove this notice, or any other, from this software.
 
-(ns clojure.tools.analyzer.passes.jvm.validate
+(ns clojure.tools.analyzer.passes.clr.validate
   (:require [clojure.tools.analyzer.ast :refer [prewalk]]
             [clojure.tools.analyzer.env :as env]
             [clojure.tools.analyzer.passes.cleanup :refer [cleanup]]
             [clojure.tools.analyzer.utils :refer [arglist-for-arity source-info resolve-var resolve-ns]]
-            [clojure.tools.analyzer.jvm.utils :as u :refer [tag-match? try-best-match]])
+            [clojure.tools.analyzer.clr.utils :as u :refer [tag-match? try-best-match]])
   (:import (clojure.lang IFn ExceptionInfo)))
 
 (defmulti -validate :op)
@@ -241,7 +241,7 @@
       and name part of the symbol, as symbols and the originating
       AST node which can be either a :maybe-class or a :maybe-host-form,
       those nodes are documented in the tools.analyzer quickref.
-      The function must return a valid tools.analyzer.jvm AST node."
+      The function must return a valid tools.analyzer.clr AST node."
   [{:keys [tag form env] :as ast}]
   (when-let [t (:tag (meta form))]
     (when-not (u/maybe-class t)

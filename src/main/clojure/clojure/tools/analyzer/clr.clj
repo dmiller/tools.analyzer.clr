@@ -6,8 +6,8 @@
 ;;   the terms of this license.
 ;;   You must not remove this notice, or any other, from this software.
 
-(ns clojure.tools.analyzer.jvm
-  "Analyzer for clojure code, extends tools.analyzer with JVM specific passes/forms"
+(ns clojure.tools.analyzer.clr
+  "Analyzer for clojure code, extends tools.analyzer with CLR specific passes/forms"
   (:refer-clojure :exclude [macroexpand-1 macroexpand])
   (:require [clojure.tools.analyzer
              :as ana
@@ -19,7 +19,7 @@
              [ast :refer [walk prewalk postwalk]]
              [env :as env :refer [*env*]]]
 
-            [clojure.tools.analyzer.jvm.utils :refer :all :exclude [box specials]]
+            [clojure.tools.analyzer.clr.utils :refer :all :exclude [box specials]]
 
             [clojure.tools.analyzer.passes
              [source-info :refer [source-info]]
@@ -30,7 +30,7 @@
              [add-binding-atom :refer [add-binding-atom]]
              [uniquify :refer [uniquify-locals]]]
 
-            [clojure.tools.analyzer.passes.jvm
+            [clojure.tools.analyzer.passes.clr
              [box :refer [box]]
              [collect :refer [collect]]
              [constant-lifter :refer [constant-lift]]
@@ -58,12 +58,12 @@
   (:import clojure.lang.IObj))
 
 (def specials
-  "Set of the special forms for clojure in the JVM"
+  "Set of the special forms for clojure in the CLR"
   (into ana/specials
         '#{var monitor-enter monitor-exit clojure.core/import* reify* deftype* case*}))
 
 (defmulti parse
-  "Extension to tools.analyzer/-parse for JVM special forms"
+  "Extension to tools.analyzer/-parse for CLR special forms"
   (fn [[op & rest] env] op))
 
 (defmethod parse :default
@@ -391,22 +391,22 @@
    * elide-meta
    * warn-earmuff
    * collect-closed-overs
-   * jvm.collect
-   * jvm.box
-   * jvm.constant-lifter
-   * jvm.annotate-branch
-   * jvm.annotate-loops
-   * jvm.annotate-class-id
-   * jvm.annotate-internal-name
-   * jvm.annotate-methods
-   * jvm.fix-case-test
-   * jvm.clear-locals
-   * jvm.classify-invoke
-   * jvm.validate
-   * jvm.infer-tag
-   * jvm.annotate-tag
-   * jvm.validate-loop-locals
-   * jvm.analyze-host-expr"
+   * clr.collect
+   * clr.box
+   * clr.constant-lifter
+   * clr.annotate-branch
+   * clr.annotate-loops
+   * clr.annotate-class-id
+   * clr.annotate-internal-name
+   * clr.annotate-methods
+   * clr.fix-case-test
+   * clr.clear-locals
+   * clr.classify-invoke
+   * clr.validate
+   * clr.infer-tag
+   * clr.annotate-tag
+   * clr.validate-loop-locals
+   * clr.analyze-host-expr"
   [ast]
   (-> ast
 
@@ -458,10 +458,10 @@
     clear-locals))
 
 (defn analyze
-  "Returns an AST for the form that's compatible with what tools.emitter.jvm requires.
+  "Returns an AST for the form that's compatible with what tools.emitter.clr requires.
 
    Binds tools.analyzer/{macroexpand-1,create-var,parse} to
-   tools.analyzer.jvm/{macroexpand-1,create-var,parse} and analyzes the form.
+   tools.analyzer.clr/{macroexpand-1,create-var,parse} and analyzes the form.
 
    If provided, opts should be a map of options to analyze, currently the only valid
    options are :bindings and :passes-opts.

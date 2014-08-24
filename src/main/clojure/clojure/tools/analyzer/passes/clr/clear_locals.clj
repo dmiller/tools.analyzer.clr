@@ -6,7 +6,7 @@
 ;;   the terms of this license.
 ;;   You must not remove this notice, or any other, from this software.
 
-(ns clojure.tools.analyzer.passes.jvm.clear-locals
+(ns clojure.tools.analyzer.passes.clr.clear-locals
   (:require [clojure.tools.analyzer.ast :refer [update-children]]
             [clojure.tools.analyzer.utils :refer [ctx rseqv]]))
 

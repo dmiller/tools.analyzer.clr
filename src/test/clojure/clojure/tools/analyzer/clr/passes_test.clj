@@ -1,31 +1,31 @@
-(ns clojure.tools.analyzer.jvm.passes-test
+(ns clojure.tools.analyzer.clr.passes-test
   (:refer-clojure :exclude [macroexpand-1])
   (:require [clojure.tools.analyzer.ast :refer :all]
-            [clojure.tools.analyzer.jvm :as ana.jvm]
+            [clojure.tools.analyzer.clr :as ana.clr]
             [clojure.tools.analyzer.env :as env]
             [clojure.test :refer [deftest is]]
             [clojure.set :as set]
             [clojure.tools.analyzer.passes.add-binding-atom :refer [add-binding-atom]]
             [clojure.tools.analyzer.passes.collect-closed-overs :refer [collect-closed-overs]]
-            [clojure.tools.analyzer.jvm.core-test :refer [ast ast1 e f f1]]
-            [clojure.tools.analyzer.passes.jvm.emit-form
+            [clojure.tools.analyzer.clr.core-test :refer [ast ast1 e f f1]]
+            [clojure.tools.analyzer.passes.clr.emit-form
              :refer [emit-form emit-hygienic-form]]
-            [clojure.tools.analyzer.passes.jvm.validate :as v]
-            [clojure.tools.analyzer.passes.jvm.annotate-tag :refer [annotate-tag]]
-            [clojure.tools.analyzer.passes.jvm.clear-locals :refer [clear-locals]]
-            [clojure.tools.analyzer.passes.jvm.infer-tag :refer [infer-tag]]
-            [clojure.tools.analyzer.passes.jvm.annotate-branch :refer [annotate-branch]]
-            [clojure.tools.analyzer.passes.jvm.annotate-methods :refer [annotate-methods]]
-            [clojure.tools.analyzer.passes.jvm.annotate-loops :refer [annotate-loops]]
-            [clojure.tools.analyzer.passes.jvm.fix-case-test :refer [fix-case-test]]
-            [clojure.tools.analyzer.passes.jvm.analyze-host-expr :refer [analyze-host-expr]]
-            [clojure.tools.analyzer.passes.jvm.classify-invoke :refer [classify-invoke]])
+            [clojure.tools.analyzer.passes.clr.validate :as v]
+            [clojure.tools.analyzer.passes.clr.annotate-tag :refer [annotate-tag]]
+            [clojure.tools.analyzer.passes.clr.clear-locals :refer [clear-locals]]
+            [clojure.tools.analyzer.passes.clr.infer-tag :refer [infer-tag]]
+            [clojure.tools.analyzer.passes.clr.annotate-branch :refer [annotate-branch]]
+            [clojure.tools.analyzer.passes.clr.annotate-methods :refer [annotate-methods]]
+            [clojure.tools.analyzer.passes.clr.annotate-loops :refer [annotate-loops]]
+            [clojure.tools.analyzer.passes.clr.fix-case-test :refer [fix-case-test]]
+            [clojure.tools.analyzer.passes.clr.analyze-host-expr :refer [analyze-host-expr]]
+            [clojure.tools.analyzer.passes.clr.classify-invoke :refer [classify-invoke]])
   (:import (clojure.lang Keyword Var Symbol AFunction
                          PersistentVector PersistentArrayMap PersistentHashSet ISeq)
            java.util.regex.Pattern))
 
 (defn validate [ast]
-  (env/with-env (ana.jvm/global-env)
+  (env/with-env (ana.clr/global-env)
     (v/validate ast)))
 
 (deftest collect-test
@@ -52,9 +52,9 @@
   (is (= '(var clojure.core/+) (emit-form (ast #'+))))
   (is (= '(:foo {}) (emit-form (ast (:foo {})))))
   (is (= '(try 1 (catch Exception e nil))
-         (emit-form (ana.jvm/analyze '(try 1 (catch Exception e))))))
+         (emit-form (ana.clr/analyze '(try 1 (catch Exception e))))))
   (is (= '(try 1 (catch Exception e nil))
-         (emit-form (ana.jvm/analyze '(try 1 (catch Exception e)))
+         (emit-form (ana.clr/analyze '(try 1 (catch Exception e)))
                     {:qualifed-symbols true})))
   (is (= '(f [] 1) (emit-form (ast (f [] 1))))))
 
@@ -224,8 +224,8 @@
   (is (ast1 (loop [] (case 1 :a (recur) :b 42)))))
 
 (deftest var-tag-inference
-  (let [ast (ana.jvm/analyze '(def a "foo")
-                             (ana.jvm/empty-env)
+  (let [ast (ana.clr/analyze '(def a "foo")
+                             (ana.clr/empty-env)
                              {:passes-opts {:infer-tag/level :global}})]
     (is (= String (-> ast :var meta :tag)))))
 
@@ -233,7 +233,7 @@
   ;; test for tanal-24, without the handler analysis would throw
   ;; with an handler that ignores the tag, we can simulate the current behaviour
   ;; of the clojure compiler
-  (is (ana.jvm/analyze '(defn ^long a [] 1)
-                       (ana.jvm/empty-env)
+  (is (ana.clr/analyze '(defn ^long a [] 1)
+                       (ana.clr/empty-env)
                        {:passes-opts {:validate/wrong-tag-handler (fn [t ast]
                                                                     {t nil})}})))

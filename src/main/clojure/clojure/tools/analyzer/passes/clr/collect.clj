@@ -6,7 +6,7 @@
 ;;   the terms of this license.
 ;;   You must not remove this notice, or any other, from this software.
 
-(ns clojure.tools.analyzer.passes.jvm.collect
+(ns clojure.tools.analyzer.passes.clr.collect
   (:require [clojure.tools.analyzer.ast :refer [update-children]]))
 
 (def ^:private ^:dynamic *collects*)

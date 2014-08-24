@@ -6,9 +6,9 @@
 ;;   the terms of this license.
 ;;   You must not remove this notice, or any other, from this software.
 
-(ns clojure.tools.analyzer.passes.jvm.classify-invoke
+(ns clojure.tools.analyzer.passes.clr.classify-invoke
   (:require [clojure.tools.analyzer.utils :refer [arglist-for-arity protocol-node? source-info]]
-            [clojure.tools.analyzer.jvm.utils
+            [clojure.tools.analyzer.clr.utils
              :refer [maybe-class prim-or-obj primitive? prim-interface]]))
 
 (defn classify-invoke

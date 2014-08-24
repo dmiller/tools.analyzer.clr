@@ -1,4 +1,4 @@
-(ns clojure.tools.analyzer.passes.jvm.constant-lifter
+(ns clojure.tools.analyzer.passes.clr.constant-lifter
   (:require [clojure.tools.analyzer.passes.constant-lifter :as orig]
             [clojure.tools.analyzer :refer [-analyze]]
             [clojure.tools.analyzer.utils :refer [constant? classify]]))

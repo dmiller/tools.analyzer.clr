@@ -6,7 +6,7 @@
 ;;   the terms of this license.
 ;;   You must not remove this notice, or any other, from this software.
 
-(ns clojure.tools.analyzer.passes.jvm.annotate-branch)
+(ns clojure.tools.analyzer.passes.clr.annotate-branch)
 
 (defmulti annotate-branch
   "Adds :branch? to branch AST nodes (if/case), :test? to the test children

@@ -6,10 +6,10 @@
 ;;   the terms of this license.
 ;;   You must not remove this notice, or any other, from this software.
 
-(ns clojure.tools.analyzer.passes.jvm.analyze-host-expr
+(ns clojure.tools.analyzer.passes.clr.analyze-host-expr
   (:require [clojure.tools.analyzer :as ana]
             [clojure.tools.analyzer.utils :refer [ctx source-info resolve-var]]
-            [clojure.tools.analyzer.jvm.utils :refer :all]))
+            [clojure.tools.analyzer.clr.utils :refer :all]))
 
 (defn maybe-static-field [[_ class sym]]
   (when-let [{:keys [flags type name]} (static-field class sym)]

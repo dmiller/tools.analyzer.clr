@@ -6,7 +6,7 @@
 ;;   the terms of this license.
 ;;   You must not remove this notice, or any other, from this software.
 
-(ns clojure.tools.analyzer.passes.jvm.annotate-internal-name
+(ns clojure.tools.analyzer.passes.clr.annotate-internal-name
   (:require [clojure.tools.analyzer.ast :refer [update-children]]
             [clojure.string :as s]))
 

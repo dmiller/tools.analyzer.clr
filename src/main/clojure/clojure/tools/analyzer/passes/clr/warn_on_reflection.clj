@@ -6,7 +6,7 @@
 ;;   the terms of this license.
 ;;   You must not remove this notice, or any other, from this software.
 
-(ns clojure.tools.analyzer.passes.jvm.warn-on-reflection)
+(ns clojure.tools.analyzer.passes.clr.warn-on-reflection)
 
 (defn warn [what {:keys [file line column]}]
   (when *warn-on-reflection*

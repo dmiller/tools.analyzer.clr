@@ -6,7 +6,7 @@
 ;;   the terms of this license.
 ;;   You must not remove this notice, or any other, from this software.
 
-(ns clojure.tools.analyzer.passes.jvm.emit-form
+(ns clojure.tools.analyzer.passes.clr.emit-form
   (:require [clojure.tools.analyzer.passes.emit-form :as default]))
 
 (defmulti -emit-form (fn [{:keys [op]} _] op))

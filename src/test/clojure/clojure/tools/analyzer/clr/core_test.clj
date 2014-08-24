@@ -1,7 +1,7 @@
-(ns clojure.tools.analyzer.jvm.core-test
+(ns clojure.tools.analyzer.clr.core-test
   (:refer-clojure :exclude [macroexpand-1])
   (:require [clojure.tools.analyzer :as ana]
-            [clojure.tools.analyzer.jvm :as ana.jvm]
+            [clojure.tools.analyzer.clr :as ana.clr]
             [clojure.tools.analyzer.env :as env]
             [clojure.tools.analyzer.passes.elide-meta :refer [elides elide-meta]]
             [clojure.tools.analyzer.ast :refer [postwalk]]
@@ -9,27 +9,27 @@
 
 (defprotocol p (f [_]))
 (defn f1 [^long x])
-(def e (ana.jvm/empty-env))
+(def e (ana.clr/empty-env))
 
 (defmacro ast [form]
-  `(binding [ana/macroexpand-1 ana.jvm/macroexpand-1
-             ana/create-var    ana.jvm/create-var
-             ana/parse         ana.jvm/parse
+  `(binding [ana/macroexpand-1 ana.clr/macroexpand-1
+             ana/create-var    ana.clr/create-var
+             ana/parse         ana.clr/parse
              ana/var?          var?
              elides            {:all #{:line :column :file}}]
-     (env/with-env (ana.jvm/global-env)
+     (env/with-env (ana.clr/global-env)
        (postwalk (ana/analyze '~form e) elide-meta))))
 
 (defmacro ast1 [form]
-  `(binding [ana/macroexpand-1 ana.jvm/macroexpand-1
-             ana/create-var    ana.jvm/create-var
-             ana/parse         ana.jvm/parse
+  `(binding [ana/macroexpand-1 ana.clr/macroexpand-1
+             ana/create-var    ana.clr/create-var
+             ana/parse         ana.clr/parse
              ana/var?          var?
              elides            {:all #{:line :column :file}}]
-     (ana.jvm/analyze '~form e)))
+     (ana.clr/analyze '~form e)))
 
 (defmacro mexpand [form]
-  `(ana.jvm/macroexpand-1 '~form e))
+  `(ana.clr/macroexpand-1 '~form e))
 
 (deftest macroexpander-test
   (is (= (list '. (list 'clojure.core/identity java.lang.Object) 'toString)
