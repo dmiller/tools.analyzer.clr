@@ -1,5 +1,6 @@
 (ns clojure.tools.analyzer.clr.core-test
   (:refer-clojure :exclude [macroexpand-1])
+  (:import [System.Configuration ISettingsProviderService SettingsProvider SettingsProperty])              ;;; DM: ADDED
   (:require [clojure.tools.analyzer :as ana]
             [clojure.tools.analyzer.clr :as ana.clr]
             [clojure.tools.analyzer.env :as env]
@@ -32,7 +33,7 @@
   `(ana.clr/macroexpand-1 '~form e))
 
 (deftest macroexpander-test
-  (is (= (list '. (list 'clojure.core/identity java.lang.Object) 'ToString)    ;;; toString
+  (is (= (list '. (list 'clojure.core/identity Object) 'ToString)    ;;; java.lang.Object toString
          (mexpand (.ToString Object))))                                        ;;; .toString
   (is (= (list '. Int32 '(Parse "2")) (mexpand (Int32/Parse "2")))))           ;;; java.lang.Integer  parseInt  Integer/parseInt
 
@@ -55,19 +56,19 @@
     (is (= "java.lang.String" (:class i-ast))))
 
   (let [r-ast (ast ^:foo (reify
-                           Object (toString [this] "")
-                           Appendable (^Appendable append [this ^char x] this)))]
+                           Object (ToString [this] "")                                                                                    ;;; toString
+                           ISettingsProviderService (^SettingsProvider GetSettingsProvider [this ^SettingsProperty property] nil)))]      ;;; Appendable (^Appendable append [this ^char x] this)
     (is (= :with-meta (-> r-ast :op))) ;; line/column info
     (is (= :reify (-> r-ast :expr :op)))
-    (is (= #{Appendable clojure.lang.IObj} (-> r-ast :expr :interfaces)))
-    (is (= '#{toString append} (->> r-ast :expr :methods (mapv :name) set))))
+    (is (= #{ISettingsProviderService clojure.lang.IObj} (-> r-ast :expr :interfaces)))               ;;; Appendable
+    (is (= '#{ToString GetSettingsProvider} (->> r-ast :expr :methods (mapv :name) set))))            ;;; toString append
 
   (let [dt-ast (ast (deftype* x user.x [a b]
-                      :implements [Appendable]
-                      (^Appendable append [this ^char x] this)))]
+                      :implements [ISettingsProviderService]                                                        ;;; Appendable
+                      (^SettingsProvider GetSettingsProvider [this ^SettingsProperty property] nil)))]              ;;; (^Appendable append [this ^char x] this)
     (is (= :deftype (-> dt-ast :op)))
     (is (= '[a b] (->> dt-ast :fields (mapv :name))))
-    (is (= '[append] (->> dt-ast :methods (mapv :name))))
+    (is (= '[GetSettingsProvider] (->> dt-ast :methods (mapv :name))))                                             ;;; append
     (is (= 'user.x (-> dt-ast :class-name))))
 
   (let [c-ast (ast (case* 1 0 0 :number {2 [2 :two] 3 [3 :three]} :compact :int))]

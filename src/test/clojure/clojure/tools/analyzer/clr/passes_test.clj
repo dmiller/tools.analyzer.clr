@@ -22,7 +22,7 @@
             [clojure.tools.analyzer.passes.clr.classify-invoke :refer [classify-invoke]])
   (:import (clojure.lang Keyword Var Symbol AFunction
                          PersistentVector PersistentArrayMap PersistentHashSet ISeq)
-           java.util.regex.Pattern))
+           System.Text.RegularExpressions.Regex))                                          ;;; java.util.regex.Pattern
 
 (defn validate [ast]
   (env/with-env (ana.clr/global-env)
@@ -154,13 +154,13 @@
   (is (= String (-> (ast "foo") annotate-tag :tag)))
   (is (= Keyword (-> (ast :foo) annotate-tag :tag)))
   (is (= Char (-> (ast \f) annotate-tag :tag)))               ;;; Character/TYPE 
-  (is (= Long (-> (ast 1) annotate-tag :tag)))                ;;; Long/TYPE
-  (is (= Pattern (-> (ast #"foo") annotate-tag :tag)))
+  (is (= Int64 (-> (ast 1) annotate-tag :tag)))               ;;; Long/TYPE
+  (is (= Regex (-> (ast #"foo") annotate-tag :tag)))          ;;; Pattern
   (is (= Var (-> (ast #'+)  annotate-tag :tag)))
   (is (= Boolean (-> (ast true) annotate-tag :tag)))
   (let [b-ast (-> (ast (let [a 1] a)) add-binding-atom
                  (postwalk annotate-tag))]
-    (is (= Long (-> b-ast :body :ret :tag)))))               ;;; Long/TYPE
+    (is (= Int64 (-> b-ast :body :ret :tag)))))               ;;; Long/TYPE
 
 (deftest classify-invoke-test
   (is (= :keyword-invoke (-> (ast (:foo {})) classify-invoke :op)))
@@ -201,11 +201,11 @@
   (let [t-ast (ast1 (let [a 1
                           b 2
                           c (str a)
-                          d (Integer/parseInt c b)]
-                      (Integer/getInteger c d)))]
+                          d (Convert/ToInt32 c b)]                                   ;;; Integer/parseInt
+                      (Int32/ParseInt c)))]                                    ;;; (Integer/getInteger c d)
     (is (= Int32 (-> t-ast :body :tag)))                                              ;;; Integer
     (is (= Int32 (-> t-ast :tag)))                                                    ;;; Integer
-    (is (= Long (->> t-ast :bindings (filter #(= 'a (:form %))) first :tag)))         ;;; Long/TYPE
+    (is (= Int64 (->> t-ast :bindings (filter #(= 'a (:form %))) first :tag)))         ;;; Long/TYPE
     (is (= String (->> t-ast :bindings (filter #(= 'c (:form %))) first :tag)))
     (is (= Int32 (->> t-ast :bindings (filter #(= 'd (:form %))) first :tag))))       ;;; Integer/TYPE
   (is (= System.Void (:tag (ast1 (.WriteLine System/Console "foo")))))                ;;; Void/TYPE   .println System/out
