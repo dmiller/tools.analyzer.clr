@@ -50,11 +50,11 @@
              [warn-on-reflection :refer [warn-on-reflection]]
              [emit-form :refer [emit-form]]]
 
-            [clojure.java.io :as io]
-            [clojure.tools.reader :as reader]
-            [clojure.tools.reader.reader-types :as readers]
+            [clojure.clr.io :as io]                                        ;;; [clojure.java.io :as io]
+            #_[clojure.tools.reader :as reader]
+            #_[clojure.tools.reader.reader-types :as readers]
 
-            [clojure.core.memoize :refer [memo-clear!]])
+            [clojure.tools.analyzer.clr.stubs :refer [memo-clear!]])       ;;; [clojure.core.memoize :refer [memo-clear!]]
   (:import clojure.lang.IObj))
 
 (def specials
@@ -107,12 +107,12 @@
              opns   (namespace op)]
          (cond
 
-          (.startsWith opname ".") ; (.foo bar ..)
+          (.StartsWith opname ".") ; (.foo bar ..)                                    ;;; .startsWith
           (let [[target & args] expr
                 target (if-let [target (and (not (get (:locals env) target))
                                             (maybe-class target))]
                          (with-meta (list 'clojure.core/identity target)
-                           {:tag 'java.lang.Class})
+                           {:tag 'System.Type})                                       ;;; java.lang.Class
                          target)
                 args (list* (symbol (subs opname 1)) args)]
             (with-meta (list '. target (if (= 1 (count args)) ;; we don't know if (.foo bar) is
@@ -128,7 +128,7 @@
                                          (list* op expr)))
               (meta form)))
 
-          (.endsWith opname ".") ;; (class. ..)
+          (.EndsWith opname ".") ;; (class. ..)                      ;;; .endsWith
           (with-meta (list* 'new (symbol (subs opname 0 (dec (count opname)))) expr)
             (meta form))
 
@@ -279,7 +279,7 @@
           f   [maybe-class members*]]
     (memo-clear! f [arg]))
 
-  (let [interfaces (mapv #(symbol (.getName ^Class %)) interfaces)]
+  (let [interfaces (mapv #(symbol (.FullName ^Type %)) interfaces)]               ;;; .getName ^Class
     (eval (list 'let []
                 (list 'deftype* name class-name args :implements interfaces)
                 (list 'import class-name)))))
@@ -380,7 +380,7 @@
 
 (defmethod parse 'catch
   [[_ etype ename & body :as form] env]
-  (let [etype (if (= etype :default) Throwable etype)] ;; catch-all
+  (let [etype (if (= etype :default) Exception etype)] ;; catch-all                  ;;; Throwable
     (ana/-parse `(catch ~etype ~ename ~@body) env)))
 
 (defn ^:dynamic run-passes
@@ -477,7 +477,7 @@
   ([form] (analyze form (empty-env) {}))
   ([form env] (analyze form env {}))
   ([form env opts]
-     (with-bindings (merge {clojure.lang.Compiler/LOADER (clojure.lang.RT/makeClassLoader)
+     (with-bindings (merge {                                             ;;; DELETED: clojure.lang.Compiler/LOADER (clojure.lang.RT/makeClassLoader)
                             #'ana/macroexpand-1          macroexpand-1
                             #'ana/create-var             create-var
                             #'ana/parse                  parse
@@ -577,13 +577,13 @@ twice."
             path (res-path res)]
         (when-not (get-in *env* [::analyzed-clj path])
           (binding [*ns* *ns*]
-            (with-open [rdr (io/reader res)]
-              (let [pbr (readers/indexing-push-back-reader
-                         (java.io.PushbackReader. rdr) 1 filename)
+            (with-open [rdr (io/text-reader res)]                                   ;;;  io/reader
+              (let [pbr (clojure.lang.LineNumberingTextReader. rdr)                 ;;; (readers/indexing-push-back-reader
+                                                                                    ;;; (java.io.PushbackReader. rdr) 1 filename)
                     eof (Object.)
                     env (empty-env)]
                 (loop []
-                  (let [form (reader/read pbr nil eof)]
+                  (let [form (clojure.lang.LispReader/read  pbr true eof false)]    ;;; (reader/read pbr nil eof)
                     (when-not (identical? form eof)
                       (swap! *env* update-in [::analyzed-clj path]
                              (fnil conj [])

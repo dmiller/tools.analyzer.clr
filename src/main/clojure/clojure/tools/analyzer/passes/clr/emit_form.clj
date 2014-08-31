@@ -44,7 +44,7 @@
   [{:keys [type val] :as ast} opts]
   (if (and (= type :class)
            (:qualified-symbols opts))
-    (symbol (.getName ^Class val))
+    (symbol (.FullName ^Type val))                ;;; .getName  ^Class
     (default/-emit-form ast opts)))
 
 (defmethod -emit-form :monitor-enter
@@ -72,7 +72,7 @@
       ~(-emit-form* body opts))))
 
 (defn class->sym [class]
-  (symbol (.getName ^Class class)))
+  (symbol (.FullName ^Type class)))                                     ;;; .getName ^Class
 
 (defmethod -emit-form :catch
   [{:keys [class local body]} opts]
@@ -103,11 +103,11 @@
 
 (defmethod -emit-form :static-field
   [{:keys [class field]} opts]
-  (symbol (.getName ^Class class) (name field)))
+  (symbol (.FullName ^Type class) (name field)))                        ;;; .getName ^Class
 
 (defmethod -emit-form :static-call
   [{:keys [class method args]} opts]
-  `(~(symbol (.getName ^Class class) (name method))
+  `(~(symbol (.FullName ^Type class) (name method))                     ;;; .getName ^Class
     ~@(mapv #(-emit-form* % opts) args)))
 
 (defmethod -emit-form :instance-field

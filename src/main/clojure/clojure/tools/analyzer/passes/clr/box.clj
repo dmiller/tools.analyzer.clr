@@ -39,7 +39,7 @@
     (if validated?
       ast
       (assoc ast :args (mapv -box args)
-             :o-tag Object :tag (if (not (#{Void Void/TYPE} tag))
+             :o-tag Object :tag (if (not (#{System.Void} tag))                   ;;;  Void/TYPE removed
                                   tag
                                   Object)))))
 
@@ -48,7 +48,7 @@
   (if validated?
     ast
     (assoc ast :args (mapv -box args)
-           :o-tag Object :tag (if (not (#{Void Void/TYPE} tag))
+           :o-tag Object :tag (if (not (#{System.Void} tag))                   ;;;  Void/TYPE removed
                                 tag
                                 Object))))
 
@@ -152,7 +152,7 @@
   [{:keys [test then else tag o-tag] :as ast}]
   (let [test-tag (:tag test)
         test (if (and (u/primitive? test-tag)
-                      (not= Boolean/TYPE test-tag))
+                      (not= Boolean test-tag))                               ;;; Boolean/TYPE
                (assoc test :tag (u/box test-tag))
                test)
         [then else o-tag] (if (or (boxed? tag then)

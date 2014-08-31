@@ -61,8 +61,8 @@
                :target   (second args)
                :form     form
                :env      env
-               :o-tag    Boolean/TYPE
-               :tag      (or tag Boolean/TYPE)
+               :o-tag    Boolean                   ;;; Boolean/TYPE
+               :tag      (or tag Boolean)          ;;; Boolean/TYPE
                :children [:target]})
 
        (and var? (protocol-node? the-var))

@@ -29,7 +29,7 @@
   [ast]
   (when-not (:validated? ast)
     (warn (str "call to method " (:method ast) (when-let [class (:class ast)]
-                                                 (str " on " (.getName ^Class class)))
+                                                 (str " on " (.FullName ^Type class)))  ;;; .getName ^Class
                " cannot be resolved") (:env ast)))
   ast)
 
@@ -37,7 +37,7 @@
   [ast]
   (when-not (:validated? ast)
     (warn (str "call to static method " (:method ast) " on "
-               (.getName ^Class (:class ast)) " cannot be resolved")
+               (.FullName ^Type (:class ast)) " cannot be resolved")    ;;; .getName ^Class
           (:env ast)))
   ast)
 
@@ -51,7 +51,7 @@
 (defmethod warn-on-reflection :new
   [ast]
   (when-not (:validated? ast)
-    (warn (str "call to " (.getName ^Class (:val (:class ast))) " ctor cannot be resolved")
+    (warn (str "call to " (.FullName ^Type (:val (:class ast))) " ctor cannot be resolved")   ;;; .getName ^Class
           (:env ast)))
   ast)
 

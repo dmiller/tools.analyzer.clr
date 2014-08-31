@@ -166,8 +166,8 @@
                (when-let [the-class (or (maybe-class class)
                                         (maybe-class (resolve-var class env)))]
                  (assoc (ana/-analyze :const the-class env :class)
-                   :tag   Class
-                   :o-tag Class
+                   :tag   Type                                                ;;; Class
+                   :o-tag Type                                                ;;; Class
                    :form  form))
                (-analyze-host-expr target-type (:m-or-f ast)
                                    target class? env))

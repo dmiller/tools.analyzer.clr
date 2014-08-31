@@ -32,9 +32,9 @@
   `(ana.clr/macroexpand-1 '~form e))
 
 (deftest macroexpander-test
-  (is (= (list '. (list 'clojure.core/identity java.lang.Object) 'toString)
-         (mexpand (.toString Object))))
-  (is (= (list '. java.lang.Integer '(parseInt "2")) (mexpand (Integer/parseInt "2")))))
+  (is (= (list '. (list 'clojure.core/identity java.lang.Object) 'ToString)    ;;; toString
+         (mexpand (.ToString Object))))                                        ;;; .toString
+  (is (= (list '. Int32 '(Parse "2")) (mexpand (Int32/Parse "2")))))           ;;; java.lang.Integer  parseInt  Integer/parseInt
 
 (deftest analyzer-test
 
@@ -81,12 +81,12 @@
     (is (= 0 (-> c-ast :shift)))
     (is (= 0 (-> c-ast :mask))))
 
-  (is (= Throwable (-> (ast (try (catch :default e))) :catches first :class :val))))
+  (is (= Exception (-> (ast (try (catch :default e))) :catches first :class :val))))         ;;; Throwable
 
 (deftest doseq-chunk-hint
   (let [tree (ast1 (doseq [item (range 10)]
                      (println item)))
         {[_ chunk] :bindings} tree]
     (is (= :loop (:op tree)))
-    (is (.startsWith (name (:name chunk)) "chunk"))
+    (is (.StartsWith (name (:name chunk)) "chunk"))                   ;;; .startsWith
     (is (= clojure.lang.IChunk (:tag chunk)))))

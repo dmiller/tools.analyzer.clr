@@ -46,7 +46,7 @@
 
 (defmethod -annotate-tag :char
   [ast]
-  (assoc ast :o-tag Character/TYPE :tag Character/TYPE))
+  (assoc ast :o-tag Char :tag Char))       ;;; Character/TYPE  Character/TYPE
 
 (defmethod -annotate-tag :the-var
   [ast]
@@ -63,7 +63,7 @@
                   (and (= :arg local) variadic? ISeq)
                   o-tag
                   Object)
-        o-tag (if (#{Void Void/TYPE} o-tag)
+        o-tag (if (#{System.Void} o-tag)                      ;;;  Void/TYPE removed
                 Object
                 o-tag)]
     (if-let [tag (or (:tag (meta form)) tag)]

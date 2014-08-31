@@ -20,7 +20,7 @@
   [{:keys [class env] :as ast}]
   (if-let [handle (-> (env/deref-env) :passes-opts :validate/unresolvable-symbol-handler)]
     (handle nil class ast)
-    (if (not (.contains (str class) "."))
+    (if (not (.Contains (str class) "."))                          ;;; .contains
       (throw (ex-info (str "Could not resolve var: " class)
                       (merge {:var class}
                              (source-info env))))
@@ -55,8 +55,8 @@
   [{:keys [args] :as ast}]
   (if (:validated? ast)
     ast
-    (let [^Class class (-> ast :class :val)
-          c-name (symbol (.getName class))
+    (let [^Type class (-> ast :class :val)                                           ;;; ^Class
+          c-name (symbol (.FullName class))                                          ;;; .getName
           argc (count args)
           tags (mapv :tag args)]
       (let [[ctor & rest] (->> (filter #(= (count (:parameter-types %)) argc)
@@ -148,9 +148,9 @@
 (defmethod -validate :import
   [{:keys [^String class validated? env form] :as ast}]
   (if-not validated?
-    (let [class-sym (-> class (subs (inc (.lastIndexOf class "."))) symbol)
+    (let [class-sym (-> class (subs (inc (.LastIndexOf class "."))) symbol)                          ;;; .lastIndexOf
           sym-val (resolve-var class-sym env)]
-      (if (and (class? sym-val) (not= (.getName ^Class sym-val) class)) ;; allow deftype redef
+      (if (and (class? sym-val) (not= (.FullName ^Type sym-val) class)) ;; allow deftype redef       ;;; .getName ^Class
         (throw (ex-info (str class-sym " already refers to: " sym-val
                              " in namespace: " (:ns env))
                         (merge {:class     class
@@ -192,7 +192,7 @@
       ast)))
 
 (defn validate-interfaces [{:keys [env form interfaces]}]
-  (when-not (every? #(.isInterface ^Class %) (disj interfaces Object))
+  (when-not (every? #(.IsInterface ^Type %) (disj interfaces Object))                   ;;; .isInterface ^Class 
     (throw (ex-info "only interfaces or Object can be implemented by deftype/reify"
                     (merge {:interfaces interfaces
                             :form       form}

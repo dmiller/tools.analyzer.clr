@@ -96,7 +96,7 @@
   (merge ast (select-keys body [:return-tag :arglists])
          {:o-tag (:tag body)}
          (let [tag (:tag body)]
-           (if (#{Void Void/TYPE} tag)
+           (if (#{System.Void} tag)                     ;;; Void Void/TYPE
              (assoc ast :tag Object)
              (assoc ast :tag tag)))))
 
@@ -188,7 +188,7 @@
                           (:tag (meta (:form local))))
         body-tag (:tag body)
         tag (or annotated-tag body-tag)
-        tag (if (#{Void Void/TYPE} tag)
+        tag (if (#{System.Void} tag)                          ;;; Void Void/TYPE
               Object
               tag)]
     (merge (if (not= tag body-tag)

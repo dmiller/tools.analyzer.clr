@@ -57,7 +57,7 @@
                                    (= arg-tags (mapv u/maybe-class parameter-types)))) rest))
                    (assoc (dissoc ast :interfaces :methods)
                      :bridges   (filter #(and (= arg-tags (mapv u/maybe-class (:parameter-types %)))
-                                              (.isAssignableFrom (u/maybe-class (:return-type %)) ret-tag))
+                                              (.IsAssignableFrom (u/maybe-class (:return-type %)) ret-tag))  ;;; .isAssignableFrom
                                         (disj methods-set (dissoc m :declaring-class :flags)))
                      :methods   methods
                      :interface i-tag
