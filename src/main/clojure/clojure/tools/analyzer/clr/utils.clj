@@ -66,7 +66,7 @@
   (lru (fn [x] (-maybe-class x))))
 
 (defn array-class [element-type]
-  (RT/classForName
+  (RT/classForNameE
    (str (-> element-type maybe-class .FullName (.Replace \/ \.)) "[]")         ;;; .getName  .replace
    #_(str "[" (-> element-type
               maybe-class
@@ -76,7 +76,7 @@
 
 (defn maybe-class-from-string [s]
   (try
-    (RT/classForName s)
+    (RT/classForNameE s)
     (catch Exception _
       (if-let [maybe-class ((ns-map *ns*) (symbol s))]
         (when (class? maybe-class)
